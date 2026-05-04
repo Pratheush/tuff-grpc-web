@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+    <script th:src="@{/js/login.js}" defer></script>
+    <style>
+        /* Apply spacing to all anchor tags inside the container */
+        .link-container a {
+            display: inline-block; /* Ensures margin works properly */
+            margin-right: 20px;    /* Space between links */
+            text-decoration: none; /* Optional: remove underline */
+            color: blue;           /* Optional: link color */
+        }
+
+        /* Remove margin from the last link to avoid extra space */
+        .link-container a:last-child {
+            margin-right: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="login-wrapper">
+    <div class="login-box">
+        <h2>Welcome Back</h2>
+        <form th:action="@{/login}" method="post" id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter Username" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter Password" required>
+            </div>
+
+            <button type="submit" class="login-btn">Login</button>
+            <div class="link-container">
+            <a lang="en" href="/oauth2/authorization/github">Sign Up With Github</a>
+            <a lang="en" href="/oauth2/authorization/google">Sign Up With Google</a>
+            </div>
+
+            <div class="error-bar" th:if="${param.error}">
+                Invalid username or password
+            </div>
+            <div class="logout-bar" th:if="${param.logout}">
+                You have been logged out successfully
+            </div>
+        </form>
+        <footer>
+            Code @ with R@J - 2025 Secure Authorization Server
+        </footer>
+    </div>
+</div>
+</body>
+</html>

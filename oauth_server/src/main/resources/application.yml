@@ -1,0 +1,71 @@
+spring:
+  application:
+    name: oauth-server  # Logical service name (used in logs, tracing)
+  datasource:
+    driver-class-name: org.postgresql.Driver    # PostgreSQL JDBC driver
+    url: jdbc:postgresql://172.26.238.72:5432/user_service_db   # DB connection URL
+    username: user_service_user   # DB username
+    password: userpass    # DB password
+  jpa:
+    hibernate:
+      ddl-auto: update      # Auto creates/updates tables (DEV only; use validate in PROD)
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl       # Prevents snake_case conversion → keeps exact table/column names
+    database-platform: org.hibernate.dialect.PostgreSQLDialect        # SQL dialect
+    show-sql: true          # Logs SQL queries (useful for debugging)
+
+  security:
+    oauth2:
+      authorizationserver:
+        client:
+          my-oidc-client:           # Internal client identifier
+            registration:
+              client-id: "oidc-stock-trading-client"      # Public client identifier
+              #client-secret: "{noop}client-secret"       # # Secret (noop = plain text, dev only)
+              client-secret: "$2a$12$/LrnbY9hRk.sji4s3gEL.OkKlzUVejuXExdQ0XcLceHYo1WFGww3K"     # Authentication secret (should be bcrypt in production)
+              client-authentication-methods:
+                - "client_secret_basic"            # Client sends credentials via HTTP Basic Auth
+              authorization-grant-types:
+                - "authorization_code"
+                - "refresh_token"
+                # Enables:
+                # 1. Authorization Code flow
+                # 2. Token refresh
+              redirect-uris:
+                - "http://localhost:8081/login/oauth2/code/my-oidc-client"        # Where auth server sends code after login
+              scopes:
+                - "openid"          # Required for OIDC
+                - "user.read"       # Custom scope
+                - "user.write"      # Custom scope
+                - "profile"         # OIDC profile scope
+            require-authorization-consent: false          # Skips consent screen (OK for internal apps)
+      client:
+        registration:
+          github:
+            client-id: "Ov23liTwHqNKIwYDim9B"
+            client-secret: "389111c9a887c8a8d35284dc5c53446bc73b6ee2"
+            redirect-uri: "http://localhost:8082/login/oauth2/code/github"
+            scope: "user"
+          google:
+            client-id: "google-client-id"
+            client-secret: "google-client-secret"
+            redirect-uri: "http://localhost:8082/login/oauth2/code/google"
+            scope: "email"
+
+server:
+  port: 8082        # OAuth server runs here
+
+  servlet:
+    session:
+      cookie:
+        name: OAUTHSESSIONID        # Custom session cookie name
+        http-only: true              # Prevent JS access (security)
+        secure: false               # Should be TRUE in HTTPS
+        path: /                     # Cookie valid for all paths
+        max-age: 300
+        same-site: lax               # Prevent CSRF attacks but allow some cross-site usage
+      timeout: 3m
+
+logging:
+  level:
+    org.springframework.security : DEBUG          # Enables detailed logs for debugging OAuth flow

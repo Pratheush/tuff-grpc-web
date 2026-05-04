@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Stock Lookup</title>
+    <!-- External CSS -->
+     <link rel="stylesheet" th:href="@{/css/stocks.css}">
+    <!-- External JS -->
+    <script th:src="@{/js/stocks.js}" defer></script>
+
+</head>
+<body>
+<div class="stock-container">
+    <h2>Stock Lookup</h2>
+    <form th:action="@{/client}" method="get" id="stockForm">
+        <div class="form-group">
+            <label for="stockSymbol">Stock Symbol</label>
+            <input type="text" id="stockSymbol" name="stockSymbol" placeholder="Enter Stock Symbol" required>
+        </div>
+        <button type="submit" id="submitBtn" class="submit-btn" style="display:none;">Submit</button>
+    </form>
+
+    <!-- Result section -->
+    <div id="stockResult" class="result-box" th:if="${stockResponse != null}">
+        <p><strong>User:</strong> <span th:text="${stockResponse.authenticationName}"></span></p>
+        <p><strong>Symbol:</strong> <span th:text="${stockResponse.stockName}"></span></p>
+        <p><strong>Price:</strong> <span th:text="${stockResponse.price}"></span></p>
+        <p><strong>Currency:</strong> <span th:text="${stockResponse.currency}"></span></p>
+        <p><strong>Last Updated:</strong> <span th:text="${stockResponse.timestamp}"></span></p>
+    </div>
+</div>
+</body>
+</html>
