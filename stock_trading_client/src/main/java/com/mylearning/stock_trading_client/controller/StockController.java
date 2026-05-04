@@ -14,6 +14,13 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+/**
+ * Controller class for stock trading client
+ * user requests for stock price using stock symbol :
+ *   http://localhost:8081/client?stockSymbol=GE
+ *   
+ */
+
 //@RestController
 @Controller
 @RequestMapping("/client")
